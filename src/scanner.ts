@@ -19,9 +19,10 @@ export async function scanForArbitrage(
       { token_id: m.noTokenId, side: Side.SELL },
     ]);
 
-    let books: Awaited<ReturnType<typeof client.getOrderBooks>>;
+    let books: any[];
     try {
-      books = await client.getOrderBooks(params);
+      const raw = await client.getOrderBooks(params);
+books = Array.isArray(raw) ? raw : (raw as any)?.data ?? [];
     } catch (err) {
       logger.warn("Order book batch fetch failed", { batchStart: i, error: String(err) });
       continue;

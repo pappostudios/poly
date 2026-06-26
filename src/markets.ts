@@ -10,11 +10,9 @@ export async function getActiveBinaryMarkets(client: ClobClient): Promise<Binary
   let cursor = INITIAL_CURSOR;
 
   while (true) {
-    const page = await client.getMarkets(cursor);
+    const page = await client.getSamplingSimplifiedMarkets(cursor);
 
     for (const m of page.data ?? []) {
-      // skip neg_risk (multi-outcome) and markets without exactly 2 tokens
-      if (m.neg_risk) continue;
       if (!Array.isArray(m.tokens) || m.tokens.length !== 2) continue;
 
       const yesToken = m.tokens.find((t: { outcome: string }) => t.outcome === "Yes");
